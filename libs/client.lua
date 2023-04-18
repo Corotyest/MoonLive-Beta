@@ -12,6 +12,9 @@ local Token = require 'species/token'()
 
 function client:__init()
     self.UNLOCKED = false
+
+    self.__user = User
+    self.__token = Token
 end
 
 function client:call(data)
