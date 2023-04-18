@@ -108,4 +108,6 @@ end
 endpoints = extend(endpoints)
 endpoints.api = apiEndpoint
 
+endpoints.webSocket = 'wss://eventsub-beta.wss.twitch.tv/'
+
 return endpoints
