@@ -54,7 +54,7 @@ return setmetatable({
 
         obj[events.get], obj[events.set] = __get, __set
 
-        function class:init(...)
+        function obj:init(...)
             getters[self], setters[self] = get, set
 
             if type(self.__init) == 'function' then
