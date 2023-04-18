@@ -1,7 +1,14 @@
 local class = require 'class'
 
-for name, enum in pairs(class.enums) do
-    for index, subenum in enum.Iter() do
-        p(name, index, subenum)
-    end
+local component = class 'Component'
+local getters, setters = component.__getters, component.__setters
+
+function getters.id(self)
+    return self.__id
 end
+
+function setters.id(self, value)
+    self.__id = value
+end
+
+return component

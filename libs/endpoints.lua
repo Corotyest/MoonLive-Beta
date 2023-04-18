@@ -105,4 +105,7 @@ local function extend(table, parent)
     return copy
 end
 
-return extend(endpoints)
+endpoints = extend(endpoints)
+endpoints.api = apiEndpoint
+
+return endpoints
