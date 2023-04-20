@@ -11,8 +11,8 @@ local getters, setters = Channel.__getters, Channel.__setters
 local props = { __getters = getters, __setters = setters }
 
 function Channel:__init()
-    local channel = class 'Channels'
-    self.__channel = channel()
+    local channels = class 'Channels'
+    self.__channels = channels()
 end
 
 local function properties(channel)
