@@ -40,8 +40,42 @@ Channel[call] = function(self, data)
         channel['__' .. name] = value
     end
 
+    self.id = self.__broadcaster_id
+
     return channel
 end
 
+
+function getters.name(self)
+    return self.__broadcaster_login
+end
+
+function getters.displayName(self)
+    return self.__broadcaster_name
+end
+
+function getters.gameId(self)
+    return self.__game_id
+end
+
+function getters.gameName(self)
+    return self.__game_name
+end
+
+function getters.title(self)
+    return self.__title
+end
+
+function getters.delay(self)
+    return self.__delay
+end
+
+function getters.language(self)
+    return self.__broadcaster_language
+end
+
+function getters.tags(self)
+    return self.__tags
+end
 
 return Channel
