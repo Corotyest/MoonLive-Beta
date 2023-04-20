@@ -503,7 +503,7 @@ setmetatable(Class, {
         end
 
         function meta:__call(...)
-            local isInit, callEvent = self.initialized, self[call]
+            local isInit, callEvent = class.__initialized, self[call]
             if isInit == true then
                 if type(callEvent) == 'function' then
                     return callEvent(self, ...)
@@ -512,16 +512,16 @@ setmetatable(Class, {
                 return nil
             end
 
-            -- if self.syncInit then
-            if type(self.init) == 'function' then
-                self:init(...)
-            end
-            -- end
-
             local object = setmetatable({}, clone(self, clone(meta)))
 
             objects[object] = true
-            object.__initialized = true
+            class.__initialized = true
+
+            -- if self.syncInit then
+            if type(self.init) == 'function' then
+                self.init(object, ...)
+            end
+            -- end
 
             return object
         end
@@ -576,7 +576,7 @@ setmetatable(Class, {
             end
 
             isPriv = type(key) == 'string' and scored(key)
-            isMember = isAssociated(3) or isAssociated(4, get)
+            isMember = isAssociated(2) or isAssociated(3, get)
 
             ::attempt_access::
             if isPriv and not isMember then
@@ -628,7 +628,7 @@ setmetatable(Class, {
                 return error(format(attemptOverwrite, tostring(self), key))
             end
 
-            isMember = isAssociated(3) or isAssociated(4, set)
+            isMember = isAssociated(2) or isAssociated(3, set)
 
             ::attempt_access::
             if isPriv and not isMember then
@@ -639,9 +639,14 @@ setmetatable(Class, {
         end
 
         local iterOptions = {
+            raw = class,
             meta = meta,
             public = roll,
             protected = dish,
+        }
+
+        local iterExceptions = {
+            parent = true
         }
 
         function class:__iter(options)
@@ -670,7 +675,12 @@ setmetatable(Class, {
             end
 
             return function(_, index)
-                return next(pool, index)
+                local key, value = next(pool, index)
+                if iterExceptions[key] then
+                    return next(pool, key)
+                end
+
+                return key, value
             end
         end
 
