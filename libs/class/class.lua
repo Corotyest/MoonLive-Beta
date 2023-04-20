@@ -717,6 +717,9 @@ setmetatable(Class, {
                         end
                     end
 
+                    if weld[index] then
+                        goto _continue_
+                    end
                     weld[index] = value
 
                     ::_continue_::
