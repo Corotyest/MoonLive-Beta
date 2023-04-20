@@ -1,1 +1,0 @@
-local component = require 'species/types/component'
