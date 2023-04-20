@@ -58,7 +58,7 @@ return setmetatable({
 
         obj[events.get], obj[events.set] = __get, __set
 
-        function getters.className(self)
+        function get.className(self)
             return self.__name
         end
 
