@@ -11,6 +11,8 @@ function __get(self, index)
     local get = getters[self]
     if not get then
         return nil
+    elseif type(index) == 'string' and index:find '__' == 1 then
+        return nil
     end
 
     local propertie = get[index]
@@ -23,11 +25,13 @@ function __set(self, index, value)
     local set = setters[self]
     if not set then
         return nil
+    elseif type(index) == 'string' and index:find '__' == 1 then
+        return nil
     end
 
     local propertie = set[index]
     if type(propertie) == 'function' then
-        return setted, propertie(self, value, value)
+        return setted, propertie(self, value)
     end
 end
 
@@ -49,10 +53,14 @@ return setmetatable({
         end
 
         local id = self.getnOfClasses()
-        local get, set = obj.__getters or (classify.get and class(getName:format(id))() or {}), obj.__setters or (classify.set and class(setName:format(id))() or {})
+        local get, set = (classify.get and class(getName:format(id))() or {}), (classify.set and class(setName:format(id))() or {})
         obj.__getters, obj.__setters = get, set
 
         obj[events.get], obj[events.set] = __get, __set
+
+        function getters.className(self)
+            return self.__name
+        end
 
         function obj:init(...)
             getters[self], setters[self] = get, set
