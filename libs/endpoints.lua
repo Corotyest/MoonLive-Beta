@@ -1,7 +1,12 @@
 local format = string.format
 
+local webSocket = 'wss://eventsub-beta.wss.twitch.tv/'
+
+---@type 'wss://eventsub-beta.wss.twitch.tv/ws'
+local webSocketConnection = webSocket .. 'ws'
 -- Current API endpoint with version 5.
 local apiEndpoint = 'https://api.twitch.tv/helix/%s'
+local tokenEndpoint = 'https://id.twitch.tv/oauth2/token'
 
 local endpoints = {
     chat = {
@@ -93,6 +98,7 @@ local function extend(table, parent)
         if typeV == 'table' then
             if getn(path) ~= 0 then
                 copy[name] = extend(path, parent .. name .. '/')
+                copy[name].path = format(apiEndpoint, name)
             else
                 path = name
                 goto redefine
@@ -108,6 +114,9 @@ end
 endpoints = extend(endpoints)
 endpoints.api = apiEndpoint
 
-endpoints.webSocket = 'wss://eventsub-beta.wss.twitch.tv/'
+endpoints.socket = webSocket
+endpoints.webSocket = webSocketConnection
+
+endpoints.token = tokenEndpoint
 
 return endpoints
