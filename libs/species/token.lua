@@ -3,6 +3,8 @@ local format = string.format
 local class = require 'class'
 local Component = require 'species/types/component'
 
+local call = class.events.call
+
 -- Token Types should be a module that contain those, but for now it would be like this.
 local TokenTypes = {
     bearer = 'Bearer'
@@ -10,27 +12,37 @@ local TokenTypes = {
 
 local AccessForm = '%s %s'
 
-local Token = class('Token', Component)
+local Token = Component 'Token'
 local getters, setters = Token.__getters, Token.__setters
+
+local props = { __getters = getters, __setters = setters }
 
 function Token:__init()
     self.__access_form = AccessForm
     self.__token_types = TokenTypes
 
     local tokens = class 'Tokens'
-    self.__tokens = tokens
+    self.__tokens = tokens()
 
-    local superToken = {}
+    local superToken = class 'SuperToken'
     self.__super_token = superToken
 
-    self:__clone(superToken)
+    self:__clone(true, { raw = true }, superToken)
 
     -- self.__specials = specials
 end
 
-function Token:call(data)
-    local len = self.__tokens:getn()
-    local token = class(format('Token #%s', len), self.__super_token)
+local function properties(token)
+    for name, type in pairs(props) do
+        type:__clone(true, { protected = true }, token[name])
+    end
+end
+
+Token[call] = function(self, data)
+    local len = self.__tokens.getn
+    local token = class(format('Token #%s', len + 1), self.__super_token)
+
+    properties(token)
 
     token.__access_form = self.__access_form
     token.__token_types = self.__token_types
