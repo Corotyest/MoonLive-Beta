@@ -9,6 +9,7 @@ local token, msg = moonLive:requestToken()
 
 print(token, 'message:', msg)
 
+-- feel free to use these credentials and pretest the api.
 client.id = 'yycm39ixe2qhxlmuhzoyj9meopv4zt'
 client.secret = 'fdk4hgbdarwqpo11nnt7kekpvhye6s'
 
