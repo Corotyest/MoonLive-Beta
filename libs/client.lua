@@ -1,20 +1,13 @@
 -- This is a provitional version of the Twitch Client.
 -- I wont include the methods directly, for now.
 
-local class = require 'class'
 local Component = require 'species/types/component'
 
-local client = class('Client', Component)
+local client = Component 'Client'
 local getters, setters = client.__getters, client.__setters
 
-local User = require 'species/user'()
-local Token = require 'species/token'()
-
 function client:__init()
-    self.UNLOCKED = false
-
-    self.__user = User
-    self.__token = Token
+    self.UNLOCKED = false -- we don't really need this
 end
 
 function client:call(data)
@@ -29,19 +22,16 @@ function client:call(data)
     end
 end
 
-function getters.clientId(self)
-    return self.__client_id
+function getters.grantType()
+    return 'client_credentials'
 end
 
-function setters.clientId(self, id)
-    self.__client_id = id
-end
 
-function getters.clientSecret(self)
+function getters.secret(self)
     return self.__client_secret
 end
 
-function setters.clientSecret(self, secret)
+function setters.secret(self, secret)
     self.__client_secret = secret
 end
 
