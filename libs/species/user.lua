@@ -3,17 +3,19 @@ local format = string.format
 local class = require 'class'
 local Component = require 'species/types/component'
 
-local User = class('User', Component)
+local call = class.events.call
+
+local User = Component 'User'
 local getters, setters = User.__getters, User.__setters
+
+local props = { __getters = getters, __setters = setters }
 
 function User:__init()
     local users = class 'Users'
-    self.__users = users
+    self.__users = users()
 
-    local superUser = {}
+    local superUser = class 'SuperUser'
     self.__super_user = superUser
-
-    self:__clone(superUser)
 
     local specials = {}
 
@@ -23,13 +25,21 @@ function User:__init()
     self.__specials = specials
 end
 
-function User:call(data)
-    local len = self.__users:getn()
-    local user = class(format('User #%s', len), self.__super_user)
+local function properties(user)
+    for name, type in pairs(props) do
+        type:__clone(true, { protected = true }, user[name])
+    end
+end
+
+User[call] = function(self, data)
+    local len = self.__users.getn
+    local user = class(format('User #%s', len + 1), self.__super_user)
+
+    properties(user)
 
     local specials = self.__specials
     for name, value in next, data do
-        local itSpecial = specials[name]
+        local itSpecial = specials and specials[name]
         if itSpecial then
             if type(itSpecial) == 'function' then
                 itSpecial = itSpecial(self)
