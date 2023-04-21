@@ -45,7 +45,6 @@ Channel[call] = function(self, data)
     return channel
 end
 
-
 function getters.name(self)
     return self.__broadcaster_login
 end
